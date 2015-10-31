@@ -11,6 +11,11 @@
 #define L_SHFT_REL 0xAA
 #define BACKSPACE 0x0E
 
+static int c_flag = 0;
+static int flag = 0;
+static int ctrl_flag = 0;
+static char buf[128] = '\0';
+
 /* Array for the characters without shift or CAPS */
 unsigned char scancode[4][90] =
 {
@@ -92,20 +97,17 @@ void keyboard_getchar()
 	//need to map it and interpret it
 	//then have it so it can output it
 	unsigned char out = 0;
-	int flag = 0;
-	int c_flag = 0;
-	int ctrl_flag = 0;
 	char s_code = getScancode();
 	switch (s_code)
 	{
 	case(RIGHT_SHFT || LEFT_SHFT):
-		if(flag = 2)
+		if(flag == 2)
 			flag = 3;
 		else
 			flag = 1;
 		break;
-	case((c == R_SHFT_REL) || (c == L_SHFT_REL)):
-		if(flag = 3)
+	case(R_SHFT_REL || L_SHFT_REL):
+		if(flag == 3)
 			flag = 2;
 		else 
 			flag = 0;
@@ -113,7 +115,7 @@ void keyboard_getchar()
 	case(CAPS):
 		if(c_flag == 0)
 		{
-			if(flag = 1)
+			if(flag == 1)
 				flag = 3;
 			else
 				flag = 2;
@@ -121,7 +123,7 @@ void keyboard_getchar()
 		}
 		else
 		{
-			if(flag = 3)
+			if(flag == 3)
 				flag = 1;
 			else 
 				flag = 0;
@@ -150,7 +152,7 @@ void keyboard_getchar()
 		break;
 	}
 	out = scancode[flag][s_code];
-	(if i < 128)
+	if(i < 128)
 	{
 		buf[i] = out;
 		i++;
